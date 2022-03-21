@@ -1,0 +1,13 @@
+.connect-card-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+
+    .connect-card {
+        width: fit-content;
+        border-radius: 13px;
+        padding: 4px 13px;
+        background-color: #bbbbbb;
+    }
+}
