@@ -1,5 +1,5 @@
-import React from 'react'
-import '../styles/messageCard.scss'
+import React from 'react';
+import '../styles/messageCard.scss';
 
 const MessageCard = ({ id, isMe, ip, content, sender, date }) => {
     return (
@@ -12,7 +12,7 @@ const MessageCard = ({ id, isMe, ip, content, sender, date }) => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default MessageCard;

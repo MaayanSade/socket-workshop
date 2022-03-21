@@ -3,7 +3,7 @@ import { useSocket } from '@hilma/socket.io-react';
 import MessageCard from "./MessageCard";
 import ConnectCard from "./ConnectCard";
 import SendIcon from '@material-ui/icons/Send';
-import { IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core';
 import "../styles/chat.scss";
 
 /**
@@ -28,80 +28,113 @@ const Chat = () => {
         { type: 'message', ip: '192.168.0.185', content: 'בהצלחה D:', sender: 'אריאלה', date: '19:03' },
     ]);
 
-    const [ipAddress, setIpAddress] = useState('')
+    const [ipAddress, setIpAddress] = useState('');
     const [input, setInput] = useState("");
     const socket = useSocket();
 
     useEffect(() => {
         if (!localStorage.getItem('name')) {
-            getUserName()
+            getUserName();
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         // write your code here
         // use the functions - addConnectionMessage and addMessage
+        socket.open();
 
         socket.on('connected', ({ ip }) => {
-            setIpAddress(ip)
+            console.log(ip);
+            setIpAddress(ip);
         })
-        
-        // don't forget to clean up 😉
 
+        socket.on("received_connect", (data) => {
+            addConnectionMessage(data, "connect");
+        });
+
+        socket.on("received_disconnect", (data) => {
+            addConnectionMessage(data, "disconnect");
+        });
+
+        socket.on("reconnect_error", () => {
+            console.log("reconnect_error");
+        });
+
+        socket.on("received_message", (data) => {
+            addMessage(data);
+        });
+
+        socket.on('connected', ({ ip }) => {
+            setIpAddress(ip);
+        });
+
+        // don't forget to clean up 😉
+        return () => {
+            socket.close();
+            socket.off("received_connect");
+            socket.off("received_disconnect");
+            socket.off("reconnect_error");
+            socket.off("received_message");
+        };
     }, []);
 
     useEffect(() => {
-        if (!messages.length) return
-        scrollToNewMessage(messages[messages.length - 1].id)
-    }, [messages])
+        if (!messages.length) return;
+        scrollToNewMessage(messages[messages.length - 1].id);
+    }, [messages]);
 
     function getUserName() {
         let userName;
         while (!userName) {
             userName = prompt("enter your name:");
-        }
-        localStorage.setItem('name', userName)
-    }
+        };
+        localStorage.setItem('name', userName);
+    };
 
     function onChange(e) {
         const { value } = e.target;
         setInput(value);
-    }
+    };
 
     function sendMessage() {
         if (!input.trim()) return
         // add code here
-        setInput("")
-    }
+        socket.emit("send_message", {
+            content: input,
+            sender: localStorage.getItem('name'),
+            date: currentTime()
+        });
+        setInput("");
+    };
 
     function currentTime() {
         const date = new Date()
-        return date.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" })
-    }
+        return date.toLocaleTimeString("he-IL", { hour: "2-digit", minute: "2-digit" });
+    };
 
     function handleKeyDown({ which }) {
-        if (which !== 13) return
+        if (which !== 13) return;
         sendMessage();
-    }
+    };
 
     function addConnectionMessage({ action, ip, id }) {
         const message = { id, type: "connection", action, ip }
         setMessages(prev => {
             return [...prev, message]
-        })
-    }
+        });
+    };
 
     function addMessage({ ip, date, content, sender, id }) {
         const message = { id, type: "message", ip, sender, date, content }
         setMessages(prev => {
             return [...prev, message]
-        })
-    }
+        });
+    };
 
     const scrollToNewMessage = (id) => {
-        const el = document.getElementById(String(id))
-        if (el) el.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" })
-    }
+        const el = document.getElementById(String(id));
+        if (el) el.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+    };
 
     return (
         <div className="chat-container">
@@ -128,6 +161,6 @@ const Chat = () => {
                 </div>
             </div>
         </div>
-    )
-}
-export default Chat
+    );
+};
+export default Chat;
