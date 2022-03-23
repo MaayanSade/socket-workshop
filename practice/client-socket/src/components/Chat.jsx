@@ -8,7 +8,7 @@ import "../styles/chat.scss";
 
 /**
  * messeges state below has 2 types of messages-
- * connectoin message type:
+ * connection message type:
  *  { id, type: 'connection', ip, action: 'connect' | 'disconnect' }
  * message type:
  *  { id, type: 'message', ip, content, sender, date }
@@ -70,7 +70,7 @@ const Chat = () => {
 
     function sendMessage() {
         if (!input.trim()) return
-        // add code here
+        // write your code here
         setInput("")
     }
 
