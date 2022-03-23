@@ -6,6 +6,13 @@ import SendIcon from '@material-ui/icons/Send';
 import { IconButton } from '@material-ui/core'
 import "../styles/chat.scss";
 
+// events to do:
+//     emit: "send_message" 
+//          data for the emit - object that includes: content, sender and date (use current time function)
+//     on: "received_message", "received_connect", "received_disconnect"
+//          data to receive: name, ip, message
+//     off: to all the on events
+
 /**
  * messeges state below has 2 types of messages-
  * connection message type:
@@ -13,13 +20,6 @@ import "../styles/chat.scss";
  * message type:
  *  { id, type: 'message', ip, content, sender, date }
 */
-
-// events to do:
-//     emit: "send_message" 
-//          data for the emit - object that includes: content, sender and date (use current time function)
-//     on: "received_message", "received_connect", "received_disconnect"
-//          data to receive: name, ip, message
-//     off: to all the on events
 
 const Chat = () => {
     const [messages, setMessages] = useState([
@@ -39,7 +39,7 @@ const Chat = () => {
     }, [])
 
     useEffect(() => {
-        // write your code here
+        // todo - write your code here
         // use the functions - addConnectionMessage and addMessage
 
         socket.on('connected', ({ ip }) => {
@@ -70,7 +70,7 @@ const Chat = () => {
 
     function sendMessage() {
         if (!input.trim()) return
-        // write your code here
+        // todo - write your code here
         setInput("")
     }
 
